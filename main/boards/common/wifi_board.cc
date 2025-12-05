@@ -40,12 +40,12 @@ void WifiBoard::EnterWifiConfigMode()
     auto &application = Application::GetInstance();
     application.SetDeviceState(kDeviceStateWifiConfiguring);
 
-    // Disable audio output to prevent power drop during WiFi config mode
-    auto codec = GetAudioCodec();
-    if (codec)
+    // Disable audio output to prevent voltage drop caused by speaker during wifi config mode
+    auto audio_codec = Board::GetInstance().GetAudioCodec();
+    if (audio_codec)
     {
-        ESP_LOGI(TAG, "Disabling audio output for WiFi configuration mode");
-        codec->EnableOutput(false);
+        audio_codec->EnableOutput(false);
+        ESP_LOGI(TAG, "Audio output disabled for WiFi configuration mode");
     }
 
     auto &wifi_ap = WifiConfigurationAp::GetInstance();
@@ -63,12 +63,8 @@ void WifiBoard::EnterWifiConfigMode()
     hint += wifi_ap.GetWebServerUrl();
     hint += "\n\n";
 
-    // Display WiFi config notification without audio to prevent power drop
-    auto display = Board::GetInstance().GetDisplay();
-    display->SetStatus(Lang::Strings::WIFI_CONFIG_MODE);
-    display->SetEmotion("gear");
-    display->SetChatMessage("system", hint.c_str());
-    ESP_LOGI(TAG, "WiFi config mode: %s", hint.c_str());
+    // Display WiFi config hint without sound (audio is disabled to prevent voltage drop)
+    application.Alert(Lang::Strings::WIFI_CONFIG_MODE, hint.c_str(), "gear", "");
 
 #if CONFIG_USE_ACOUSTIC_WIFI_PROVISIONING
     auto display = Board::GetInstance().GetDisplay();
@@ -125,6 +121,7 @@ void WifiBoard::StartNetwork()
         auto display = Board::GetInstance().GetDisplay();
         std::string notification = Lang::Strings::CONNECTED_TO;
         notification += ssid;
+<<<<<<< HEAD
         display->ShowNotification(notification.c_str(), 30000);
         
         // Re-enable audio output after successful WiFi connection
@@ -133,6 +130,9 @@ void WifiBoard::StartNetwork()
             ESP_LOGI(TAG, "Re-enabling audio output after WiFi connection");
             codec->EnableOutput(true);
         } });
+=======
+        display->ShowNotification(notification.c_str(), 30000); });
+>>>>>>> d431202 (Disable audio when config wifi mode)
     wifi_station.Start();
 
     // Try to connect to WiFi, if failed, launch the WiFi configuration AP
@@ -212,6 +212,7 @@ void WifiBoard::SetPowerSaveMode(bool enabled)
 
 void WifiBoard::ResetWifiConfiguration()
 {
+<<<<<<< HEAD
     // Disable audio output to prevent power drop during WiFi reset
     auto codec = GetAudioCodec();
     if (codec)
@@ -220,6 +221,8 @@ void WifiBoard::ResetWifiConfiguration()
         codec->EnableOutput(false);
     }
 
+=======
+>>>>>>> d431202 (Disable audio when config wifi mode)
     // Set a flag and reboot the device to enter the network configuration mode
     {
         Settings settings("wifi", true);
