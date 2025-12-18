@@ -28,7 +28,7 @@ const char* kAssetIndexHtml = reinterpret_cast<const char*>(assets_index_html_st
 }  // namespace
 
 // Singleton implementation
-OtaServer& OtaServer::GetInstance() {
+OtaServer& OtaServer::GetInstance() { 
   static OtaServer instance;
   return instance;
 }

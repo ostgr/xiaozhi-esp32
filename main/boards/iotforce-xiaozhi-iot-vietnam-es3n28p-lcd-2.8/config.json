@@ -2,7 +2,7 @@
     "target": "esp32s3",
     "builds": [
         {
-            "name": "xiaozhi-ai-iot-vietnam-es3n28p-lcd-2.8",
+            "name": "iotforce-xiaozhi-iot-vietnam-es3n28p-lcd-2.8",
             "sdkconfig_append": [
                 "ES3N28P_LCD_ILI9341_240X320=y",
                 "CONFIG_SD_CARD_MMC_INTERFACE=y",
