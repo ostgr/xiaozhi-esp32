@@ -15,44 +15,49 @@
 #include <string>
 #include <chrono>
 
-class Theme {
+class Theme
+{
 public:
-    Theme(const std::string& name) : name_(name) {}
+    Theme(const std::string &name) : name_(name) {}
     virtual ~Theme() = default;
 
     inline std::string name() const { return name_; }
+
 private:
     std::string name_;
 };
 
-class Display {
+class Display
+{
 public:
     Display();
     virtual ~Display();
 
-    virtual void SetStatus(const char* status);
-    virtual void ShowNotification(const char* notification, int duration_ms = 3000);
+    virtual void SetStatus(const char *status);
+    virtual void ShowNotification(const char *notification, int duration_ms = 3000);
     virtual void ShowNotification(const std::string &notification, int duration_ms = 3000);
-    virtual void SetEmotion(const char* emotion);
-    virtual void SetChatMessage(const char* role, const char* content);
-    virtual void SetMusicInfo(const char* song_name);
-    virtual void SetTheme(Theme* theme);
-    virtual Theme* GetTheme() { return current_theme_; }
+    virtual void SetEmotion(const char *emotion);
+    virtual void SetChatMessage(const char *role, const char *content);
+    virtual void SetMusicInfo(const char *song_name);
+    virtual void SetTheme(Theme *theme);
+    virtual Theme *GetTheme() { return current_theme_; }
     virtual void UpdateStatusBar(bool update_all = false);
     virtual void SetPowerSaveMode(bool on);
 
     // For FFT display
     virtual void StartFFT() {}
     virtual void StopFFT() {}
-    virtual void FeedAudioDataFFT(int16_t* data, size_t sample_count) {};
-    virtual int16_t* MakeAudioBuffFFT(size_t sample_count) { return nullptr; };
-    virtual void ReleaseAudioBuffFFT(int16_t* buffer = nullptr) {};
+    virtual void start() {}
+    virtual void stopFft() {}
+    virtual void FeedAudioDataFFT(int16_t *data, size_t sample_count) {};
+    virtual int16_t *MakeAudioBuffFFT(size_t sample_count) { return nullptr; };
+    virtual void ReleaseAudioBuffFFT(int16_t *buffer = nullptr) {};
 
     // For QR code display
     virtual void ClearQRCode() {}
     virtual bool QRCodeIsSupported() { return false; }
-    virtual void DisplayQRCode(const uint8_t* qrcode, const char* text = nullptr) {}
-    virtual void SetIpAddress(const std::string& ip_address) {}
+    virtual void DisplayQRCode(const uint8_t *qrcode, const char *text = nullptr) {}
+    virtual void SetIpAddress(const std::string &ip_address) {}
 
     // For rotation display
     virtual bool SetRotation(int rotation_degree, bool save_setting) { return false; }
@@ -64,22 +69,25 @@ protected:
     int width_ = 0;
     int height_ = 0;
 
-    Theme* current_theme_ = nullptr;
+    Theme *current_theme_ = nullptr;
 
     friend class DisplayLockGuard;
     virtual bool Lock(int timeout_ms = 0) = 0;
     virtual void Unlock() = 0;
 };
 
-
-class DisplayLockGuard {
+class DisplayLockGuard
+{
 public:
-    DisplayLockGuard(Display *display) : display_(display) {
-        if (!display_->Lock(30000)) {
+    DisplayLockGuard(Display *display) : display_(display)
+    {
+        if (!display_->Lock(30000))
+        {
             ESP_LOGE("Display", "Failed to lock display");
         }
     }
-    ~DisplayLockGuard() {
+    ~DisplayLockGuard()
+    {
         display_->Unlock();
     }
 
@@ -87,9 +95,11 @@ private:
     Display *display_;
 };
 
-class NoDisplay : public Display {
+class NoDisplay : public Display
+{
 private:
-    virtual bool Lock(int timeout_ms = 0) override {
+    virtual bool Lock(int timeout_ms = 0) override
+    {
         return true;
     }
     virtual void Unlock() override {}
